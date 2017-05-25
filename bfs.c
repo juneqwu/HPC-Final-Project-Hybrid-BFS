@@ -15,8 +15,10 @@
 /*                                                                          */
 /*                                                                          */
 /* A Hybrid Breadth-First Search is implemented using 1D partitioning of    */
-/* vertices and two queues. Non-blocking send and receive are used to       */
-/* overlap computation with communication.                                  */
+/* vertices and two queues. A bitmap is used to indicate which vertices     */
+/* have been visited. Messages are sent and processed asynchronously        */
+/* using non-blocking send and receive to overlap computation with          */
+/* communication.                                                           */
 /*                                                                          */
 /*                                                                          */
 /* The variables:                                                           */
@@ -92,10 +94,7 @@ int bfs_writes_depth_map(void) {
   return 0;
 }
 
-/* This version is the traditional level-synchronized BFS using two queues.  A
- * bitmap is used to indicate which vertices have been visited.  Messages are
- * sent and processed asynchronously throughout the code to hopefully overlap
- * communication with computation. */
+/* This is the hybrid level-synchronized BFS */
 void run_bfs(int64_t root, int64_t* pred, int SCALE) {
 
   const size_t nlocalverts = g.nlocalverts;
